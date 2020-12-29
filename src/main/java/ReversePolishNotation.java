@@ -1,6 +1,15 @@
+import java.util.Map;
 import java.util.Stack;
+import java.util.function.BiFunction;
 
 public class ReversePolishNotation {
+    Map<String, BiFunction<Double, Double, Double>> operatorsMap = Map.of(
+            "+", Double::sum,
+            "-", (a, b) -> a - b,
+            "*", (a, b) -> a * b,
+            "/", (a, b) -> a / b
+    );
+
     /**
      * @param expr string with reverse polish notation expression.
      * @return the result of expression. If string is empty returns 0.
@@ -26,26 +35,11 @@ public class ReversePolishNotation {
     private void calculate(Stack<Double> numbersInExpression, String operator) {
         double firstNumber = numbersInExpression.pop();
         double secondNumber = numbersInExpression.pop();
-
-        switch (operator) {
-            case "+":
-                numbersInExpression.push(secondNumber + firstNumber);
-                break;
-            case "-":
-                numbersInExpression.push(secondNumber - firstNumber);
-                break;
-            case "*":
-                numbersInExpression.push(secondNumber * firstNumber);
-                break;
-            case "/":
-                numbersInExpression.push(secondNumber / firstNumber);
-                break;
-
-        }
+        numbersInExpression.push(operatorsMap.get(operator).apply(secondNumber, firstNumber));
     }
 
     static boolean isNumeric(char c) {
-        return (c >= '0' && c <= '9');
+        return ((c >= '0' && c <= '9') || c == '.');
     }
 
     static boolean isNumericString(String s) {

@@ -1,3 +1,7 @@
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ConwayLife {
     /**
      * @param cells 2d array - initial state of the game
@@ -9,39 +13,74 @@ public class ConwayLife {
         if (generations == 0) {
             return cells;
         }
+        Map<Point, Integer> livingCells = createMapFrom2dArray(cells);
 
-        int cellsRows = cells.length;
-        int cellsColumns = cells[0].length;
-
-        int[][] cellsAfterGeneration = new int[cellsRows][cellsColumns];
-
-        for (int row = 0; row < cellsRows; row++) {
-            for (int col = 0; col < cellsColumns; col++) {
-                int sumOfNeighbors = numberOfNeighbors(cells, row, col);
-                if (sumOfNeighbors == 3 || (sumOfNeighbors == 2 && cells[row][col] == 1)) {
-                    cellsAfterGeneration[row][col] = 1;
-                } else {
-                    cellsAfterGeneration[row][col] = 0;
+        for (int row = 0; row < cells.length; row++) {
+            for (int col = 0; col < cells[0].length; col++) {
+                Point point = new Point(row, col);
+                if (livingCells.containsKey(point) && (countNeighbors(livingCells, point) > 3 ||
+                        countNeighbors(livingCells, point) < 2)) {
+                    livingCells.replace(point, -1);
                 }
             }
         }
-        return getGeneration(cellsAfterGeneration, generations - 1);
+        livingCells.values().removeAll(Collections.singleton(-1));
+
+        return mapTo2dArray(livingCells);
     }
 
-    public int numberOfNeighbors(int[][] array, int row, int column) {
-        int startRow = Math.max(row - 1, 0);
-        int startColumn = Math.max(column - 1, 0);
-        int endRow = Math.min(row + 1, array.length - 1);
-        int endColumn = Math.min(column + 1, array[0].length - 1);
-        int sumOfNeighbors = 0;
 
-        for (int neighRow = startRow; neighRow <= endRow; neighRow++) {
-            for (int neighColumn = startColumn; neighColumn <= endColumn; neighColumn++) {
-                if (!(neighRow == row && neighColumn == column)) {
-                    sumOfNeighbors += array[neighRow][neighColumn];
+    public Map<Point, Integer> createMapFrom2dArray(int[][] cells) {
+        Map<Point, Integer> cellsMap = new HashMap<>();
+
+        for (int row = 0; row < cells.length; row++) {
+            for (int col = 0; col < cells[0].length; col++) {
+                if (cells[row][col] == 1) {
+                    cellsMap.put(new Point(row, col), 0);
                 }
             }
         }
-        return sumOfNeighbors;
+//        IntStream stream = range(0, cells.length).flatMap(row -> range(0, cells[row].length).filter();
+        return cellsMap;
     }
+
+    public int countNeighbors(Map<Point, Integer> pointsMap, Point point) {
+        int neighCounter = 0;
+
+        for (int i = point.getX() - 1; i <= point.getX() + 1; i++) {
+            for (int j = point.getY() - 1; j <= point.getY() + 1; j++) {
+                if (pointsMap.containsKey(new Point(i, j))) {
+                    ++neighCounter;
+                }
+            }
+        }
+        return neighCounter;
+    }
+
+    public int[][] mapTo2dArray(Map<Point, Integer> pointsMap) {
+        int rows = 0;
+        int cols = 0;
+
+        for (Point point : pointsMap.keySet()) {
+            if (point.getX() > rows) {
+                rows = point.getX();
+            }
+            if (point.getY() > cols) {
+                cols = point.getY();
+            }
+        }
+
+        int[][] cells = new int[rows][cols];
+        for (int row = 0; row <= rows; row++) {
+            for (int col = 0; col <= cols; col++) {
+                Point point = new Point(row, col);
+                if (pointsMap.containsKey(point)) {
+                    cells[row][col] = 1;
+                }
+                cells[row][col] = 0;
+            }
+        }
+        return cells;
+    }
+
 }

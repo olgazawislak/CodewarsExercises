@@ -1,3 +1,5 @@
+package gameoflife;
+
 import java.util.Objects;
 
 public class Point {

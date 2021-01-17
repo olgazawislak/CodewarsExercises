@@ -1,5 +1,6 @@
 package gameoflife;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,26 +10,30 @@ import static gameoflife.CellsState.*;
 public class ConwayLife {
 
     /**
-     * @param cells       2d array - initial state of the game
+     * @param cells       two dimensional array - initial state of the game
      * @param generations number of generations in the game
-     * @return final state of Conway Life universe
+     * @return final state of Conway Life universe as a two dimensional array
      */
 
     public int[][] getGeneration(int[][] cells, int generations) {
         if (generations == 0) {
             return cells;
         }
-        Map<Point, CellsState> livingCells = arrayToMap(cells);
+        Map<Point, CellsState> aliveCells = arrayToMap(cells);
 
-        for(int gen = 0; gen < generations; gen++) {
-
+        for (int gen = 0; gen < generations; gen++) {
+            for (Point point : aliveCells.keySet()) {
+                markToBeRemoved(aliveCells, point);
+            }
+            putToBeAddedPoints(aliveCells);
+            for (Map.Entry<Point, CellsState> entry : aliveCells.entrySet()) {
+                if (entry.getValue().equals(TO_BE_ADDED)) {
+                    entry.setValue(ALIVE);
+                }
+            }
+            aliveCells.values().removeAll(Collections.singleton(TO_BE_REMOVED));
         }
-//            for (int row = getMinX(livingCells) - 1; row <= getMaxX(livingCells) + 1; row++) {
-//                for (int col = getMinY(livingCells) - 1; col <= getMaxY(livingCells) + 1; col++) {
-//                }
-//            livingCells.values().removeAll(Collections.singleton(-1));
-//        }
-        return mapTo2dArray(livingCells);
+        return mapTo2dArray(aliveCells);
     }
 
     public void markToBeRemoved(Map<Point, CellsState> pointsMap, Point point) {
@@ -39,6 +44,16 @@ public class ConwayLife {
         }
     }
 
+    public void putToBeAddedPoints(Map<Point, CellsState> pointsMap) {
+        for (int i = getMinX(pointsMap) - 1; i <= getMaxX(pointsMap) + 1; i++) {
+            for (int j = getMinY(pointsMap) - 1; i <= getMaxY(pointsMap) + 1; i++) {
+                Point point = new Point(i, j);
+                if (!pointsMap.containsKey(point) && countNeighbors(pointsMap, point) == 3) {
+                    pointsMap.put(point, TO_BE_ADDED);
+                }
+            }
+        }
+    }
 
     public Map<Point, CellsState> arrayToMap(int[][] cells) {
         Map<Point, CellsState> cellsMap = new HashMap<>();
@@ -58,9 +73,9 @@ public class ConwayLife {
 
         for (int i = point.getX() - 1; i <= point.getX() + 1; i++) {
             for (int j = point.getY() - 1; j <= point.getY() + 1; j++) {
-                Point neighPoint = new Point(i,j);
-                if( !neighPoint.equals(point) && pointsMap.containsKey(neighPoint)
-                        && pointsMap.get(neighPoint).isStillAlive()) {
+                Point neighPoint = new Point(i, j);
+                if (!neighPoint.equals(point) && pointsMap.containsKey(neighPoint)
+                        && pointsMap.get(neighPoint).isAliveOrToBeRemoved()) {
                     neighCounter++;
                 }
             }
@@ -107,8 +122,8 @@ public class ConwayLife {
         int rows = getMaxX(pointsMap);
         int cols = getMaxY(pointsMap);
 
-        int[][] cells = new int[rows + 1 + Math.abs(Math.min(minRow, 0))]
-                [cols + 1 + Math.abs(Math.min(minCol, 0))];
+        int[][] cells = new int[Math.abs(rows) + 1 + Math.abs(Math.min(minRow, 0))]
+                [Math.abs(cols) + 1 + Math.abs(Math.min(minCol, 0))];
         for (Point point : pointsMap.keySet()) {
             cells[point.getX()][point.getY()] = 1;
         }

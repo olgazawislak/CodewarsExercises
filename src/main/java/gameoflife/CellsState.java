@@ -3,9 +3,9 @@ package gameoflife;
 public enum CellsState {
     ALIVE,
     TO_BE_REMOVED,
-    TO_BORN;
+    TO_BE_ADDED;
 
-    public boolean isStillAlive() {
-        return this != TO_BORN;
+    public boolean isAliveOrToBeRemoved() {
+        return this != TO_BE_ADDED;
     }
 }

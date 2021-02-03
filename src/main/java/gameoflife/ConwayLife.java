@@ -46,7 +46,7 @@ public class ConwayLife {
 
     public void putToBeAddedPoints(Map<Point, CellsState> pointsMap) {
         for (int i = getMinX(pointsMap) - 1; i <= getMaxX(pointsMap) + 1; i++) {
-            for (int j = getMinY(pointsMap) - 1; i <= getMaxY(pointsMap) + 1; i++) {
+            for (int j = getMinY(pointsMap) - 1; j <= getMaxY(pointsMap) + 1; j++) {
                 Point point = new Point(i, j);
                 if (!pointsMap.containsKey(point) && countNeighbors(pointsMap, point) == 3) {
                     pointsMap.put(point, TO_BE_ADDED);
@@ -122,10 +122,13 @@ public class ConwayLife {
         int rows = getMaxX(pointsMap);
         int cols = getMaxY(pointsMap);
 
-        int[][] cells = new int[Math.abs(rows) + 1 + Math.abs(Math.min(minRow, 0))]
-                [Math.abs(cols) + 1 + Math.abs(Math.min(minCol, 0))];
+        int endRow = rows - minRow + 1;
+        int endCol = cols - minCol + 1;
+
+
+        int[][] cells = new int[endRow][endCol];
         for (Point point : pointsMap.keySet()) {
-            cells[point.getX()][point.getY()] = 1;
+            cells[point.getX() - minRow][point.getY() - minCol] = 1;
         }
         return cells;
     }

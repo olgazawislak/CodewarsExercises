@@ -10,7 +10,7 @@ import static gameoflife.CellsState.*;
 public class ConwayLife {
 
     /**
-     * @param cells       two dimensional array - initial state of the game
+     * @param cells     two dimensional array - initial state of the game
      * @param generations number of generations in the game
      * @return final state of Conway Life universe as a two dimensional array
      */
@@ -45,9 +45,9 @@ public class ConwayLife {
     }
 
     public void putToBeAddedPoints(Map<Point, CellsState> pointsMap) {
-        for (int i = getMinX(pointsMap) - 1; i <= getMaxX(pointsMap) + 1; i++) {
-            for (int j = getMinY(pointsMap) - 1; j <= getMaxY(pointsMap) + 1; j++) {
-                Point point = new Point(i, j);
+        for (int x = getMinX(pointsMap) - 1; x <= getMaxX(pointsMap) + 1; x++) {
+            for (int y = getMinY(pointsMap) - 1; y <= getMaxY(pointsMap) + 1; y++) {
+                Point point = new Point(x, y);
                 if (!pointsMap.containsKey(point) && countNeighbors(pointsMap, point) == 3) {
                     pointsMap.put(point, TO_BE_ADDED);
                 }

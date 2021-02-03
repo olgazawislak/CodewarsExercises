@@ -27,6 +27,21 @@ class ConwayLifeTest {
     }
 
     @Test
+    void getMoreThanOneGenerationTest() {
+        int generations = 4;
+        int[][] initialCells = {
+                {1, 0, 0},
+                {0, 1, 1},
+                {1, 1, 0}};
+        int[][] expectedCells = {
+                {1, 0, 0},
+                {0, 1, 1},
+                {1, 1, 0}};
+
+        assertThat(conwayLife.getGeneration(initialCells, generations)).isEqualTo(expectedCells);
+    }
+
+    @Test
     void markToBeRemovedTest() {
         Point firstPoint = new Point(0, 0);
         Point secondPoint = new Point(1, 0);

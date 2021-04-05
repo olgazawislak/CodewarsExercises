@@ -2,6 +2,7 @@ import java.util.stream.IntStream;
 
 public class Matrix {
 
+
     public int[][] matrixMultiplication(int[][] a, int[][] b) {
         int rows = a.length;
         int cols = b[0].length;

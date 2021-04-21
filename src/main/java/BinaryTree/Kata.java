@@ -10,6 +10,10 @@ public class Kata {
     public List<Integer> treeByLevels(Node node) {
 
         List<Integer> nodeList = new ArrayList<>();
+        if(node == null) {
+            return nodeList;
+        }
+
         Queue<Node> nodeQueue = new LinkedList<>();
         nodeQueue.add(node);
 

@@ -24,7 +24,6 @@ public class MinNbDiv {
                     counter++;
                 }
             }
-
         }
         return counter;
     }
